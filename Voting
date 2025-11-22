@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chili Cook-Off Voting</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 10px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #b22222;
+    }
+
+    .field {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 1.1em;
+      margin-bottom: 6px;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px;
+      font-size: 1em;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      font-size: 1.2em;
+      background: #b22222;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+
+    button:active {
+      opacity: 0.8;
+    }
+
+    #results {
+      margin-top: 30px;
+      font-size: 1.1em;
+    }
+
+    .result-row {
+      padding: 8px 0;
+      border-bottom: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Chili Cook-Off Voting</h1>
+
+<p style="text-align:center;">Select your 1st, 2nd, and 3rd place choices.</p>
+
+<div class="field">
+  <label>1st Place (3 pts)</label>
+  <select id="firstPlace"></select>
+</div>
+
+<div class="field">
+  <label>2nd Place (2 pts)</label>
+  <select id="secondPlace"></select>
+</div>
+
+<div class="field">
+  <label>3rd Place (1 pt)</label>
+  <select id="thirdPlace"></select>
+</div>
+
+<button onclick="submitVote()">Submit Vote</button>
+
+<h2>Current Standings:</h2>
+<div id="results"></div>
+
+<script>
+  const entries = ["Chili A", "Chili B", "Chili C", "Chili D"];
+
+  let scores = {};
+  entries.forEach(e => scores[e] = 0);
+
+  function populateDropdowns() {
+    const selects = ["firstPlace", "secondPlace", "thirdPlace"];
+    selects.forEach(id => {
+      const sel = document.getElementById(id);
+      entries.forEach(e => {
+        const opt = document.createElement("option");
+        opt.value = e;
+        opt.textContent = e;
+        sel.appendChild(opt);
+      });
+    });
+  }
+
+  populateDropdowns();
+
+  function submitVote() {
+    const first = document.getElementById("firstPlace").value;
+    const second = document.getElementById("secondPlace").value;
+    const third = document.getElementById("thirdPlace").value;
+
+    if (new Set([first, second, third]).size !== 3) {
+      alert("Each place must be a different chili!");
+      return;
+    }
+
+    scores[first] += 3;
+    scores[second] += 2;
+    scores[third] += 1;
+
+    showResults();
+    alert("Vote submitted!");
+  }
+
+  function showResults() {
+    const container = document.getElementById("results");
+    container.innerHTML = "";
+
+    const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+
+    sorted.forEach(([name, points]) => {
+      container.innerHTML += `<div class="result-row"><strong>${name}</strong>: ${points} points</div>`;
+    });
+  }
+
+  showResults();
+</script>
+
+</body>
+</html>
